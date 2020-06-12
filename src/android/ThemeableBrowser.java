@@ -79,7 +79,6 @@ import org.apache.cordova.LOG;
 import org.apache.cordova.PluginManager;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.Whitelist;
-import org.apache.cordova.inappbrowser.InAppBrowser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -941,7 +940,9 @@ public class ThemeableBrowser extends CordovaPlugin {
 
                 String overrideUserAgent = preferences.getString("OverrideUserAgent", null);
                 
-                if (overrideUserAgent != null) {
+                if (features.customUserAgent != null) {
+                    settings.setUserAgentString(features.customUserAgent);
+                } else if (overrideUserAgent != null) {
                     settings.setUserAgentString(overrideUserAgent);
                 } else {
                     String appendUserAgent = preferences.getString("AppendUserAgent", null);
@@ -1509,7 +1510,7 @@ public class ThemeableBrowser extends CordovaPlugin {
             final List<ResolveInfo> resolvedActivities = packageManager.queryIntentActivities(customSchemeIntent, 0);
 
             String newloc = "";
-            if (url.startsWith("http:") || url.startsWith("https:") || url.startsWith("file:")) {
+            if ((url.startsWith("http:") || url.startsWith("https:") || url.startsWith("file:")) && (!url.startsWith("http://play.google.com") && !url.startsWith("https://play.google.com"))) {
                 newloc = url;
             } else if (url.startsWith(WebView.SCHEME_TEL)) {
                 try {
@@ -1520,7 +1521,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                 } catch (android.content.ActivityNotFoundException e) {
                     Log.e(LOG_TAG, "Error dialing " + url + ": " + e.toString());
                 }
-            } else if (url.startsWith("geo:") || url.startsWith(WebView.SCHEME_MAILTO) || url.startsWith("market:")) {
+            } else if (url.startsWith("geo:") || url.startsWith(WebView.SCHEME_MAILTO) || url.startsWith("market:") || url.startsWith("http://play.google.com") || url.startsWith("https://play.google.com")) {
                 try {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(url));
@@ -1739,8 +1740,9 @@ public class ThemeableBrowser extends CordovaPlugin {
         public BrowserButton[] customButtons;
         public boolean backButtonCanClose;
         public boolean disableAnimation;
-        public boolean fullscreen;        
+        public boolean fullscreen;
         public BrowserProgress browserProgress;
+        public String customUserAgent;
     }
 
     private static class Event {
