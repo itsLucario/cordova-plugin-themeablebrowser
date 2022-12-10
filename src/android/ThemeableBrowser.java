@@ -78,7 +78,7 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PluginManager;
 import org.apache.cordova.PluginResult;
-import org.apache.cordova.Whitelist;
+import org.apache.cordova.AllowList;
 import org.apache.cordova.inappbrowser.InAppBrowser;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -158,7 +158,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                     // SELF
                     if (SELF.equals(target)) {
                         /* This code exists for compatibility between 3.x and 4.x versions of Cordova.
-                         * Previously the Config class had a static method, isUrlWhitelisted(). That
+                         * Previously the Config class had a static method, isUrlAllowListed(). That
                          * responsibility has been moved to the plugins, with an aggregating method in
                          * PluginManager.
                          */
@@ -167,7 +167,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                             shouldAllowNavigation = true;
                         }
                         if (shouldAllowNavigation == null) {
-                            shouldAllowNavigation = new Whitelist().isUrlWhiteListed(url);
+                            shouldAllowNavigation = new AllowList().isUrlAllowListed(url);
                         }
                         if (shouldAllowNavigation == null) {
                             try {
